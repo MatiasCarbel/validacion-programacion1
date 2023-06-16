@@ -37,9 +37,13 @@ void addWine() {
     std::cout<< std::endl;
     std::cout << "Enter the wine code: ";
     std::cin >> newWine.wineCode;
+    //validates newWine.windeCode is number
+    for (int i : newWine.wineCode) {
+        assert(isdigit(i));
+    }
     std::cout<< std::endl;
 
-    //validate wine code is not repeated
+
     for (const auto& wine : inventory) {
         if (wine.wineCode == newWine.wineCode) {
             std::cout << "The wine code is already in use." << std::endl;
@@ -53,7 +57,6 @@ void addWine() {
     std::cin >> newWine.name;
     std::cout<< std::endl;
 
-    //validate wine name is not repeated
     for (const auto& wine : inventory) {
         if (wine.name == newWine.name) {
             std::cout << "The wine name is already in use." << std::endl;
@@ -83,12 +86,17 @@ void addWine() {
 
     std::cout << "Enter the wine type(Red, White, Rose): ";
     std::cin >> newWine.type;
-    assert(newWine.type == "Red" || newWine.type == "White" || newWine.type == "Rose");
+    //turn the string to uppercase
+    for (int i = 0; i < newWine.type.length(); i++) {
+        newWine.type[i] = toupper(newWine.type[i]);
+    }
+    assert(newWine.type == "RED" || newWine.type == "WHITE" || newWine.type == "ROSE");
     std::cout<< std::endl;
 
 
     std::cout << "Enter the price without taxes: ";
     std::cin >> newWine.priceWithoutTaxes;
+    assert(newWine.priceWithoutTaxes > 0);
     std::cout<< std::endl;
 
 
@@ -98,16 +106,29 @@ void addWine() {
 
     std::cout << "Enter the provider name: ";
     std::cin >> newWine.provider.name;
+
+    //validates newWine.provider.name is string
+    for (char i : newWine.provider.name) {
+        assert(isalpha(i));
+    }
     std::cout<< std::endl;
 
 
     std::cout << "Enter the provider phone: ";
     std::cin >> newWine.provider.phone;
+    assert(newWine.provider.phone.length() == 9);
     std::cout<< std::endl;
 
 
     std::cout << "Enter the provider identification number: ";
     std::cin >> newWine.provider.identificationNumber;
+
+    assert(newWine.provider.identificationNumber.length() == 8);
+
+    //validates newWine.provider.identificationNumber is number
+    for (char i : newWine.provider.identificationNumber) {
+        assert(isdigit(i));
+    }
     std::cout<< std::endl;
 
 
