@@ -2,7 +2,7 @@
 #include <vector>
 #include <string>
 #include <fstream>
-#include <cassert>
+#include <limits>
 
 
 struct Date {
@@ -31,107 +31,407 @@ struct Wine {
 
 std::vector<Wine> inventory;
 
+bool isNumericStr( std::string str){
+    for (char i : str) {
+        if (!isdigit(i)) {
+            return false;
+        }
+    }
+    return true;
+}
+
+bool isAlphaNumericStr( std::string str){
+    for (char i : str) {
+        if (!isalnum(i)) {
+            return false;
+        }
+    }
+    return true;
+}
+
+bool codeIsInUse(std::string code, std::vector<Wine> inventory) {
+    for (auto wine : inventory) {
+        if (wine.wineCode == code) {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool isAlphaStr( std::string str){
+    for (char i : str) {
+        if (!isalpha(i)) {
+            return false;
+        }
+    }
+    return true;
+}
+
 void addWine() {
     Wine newWine;
 
-    std::cout<< std::endl;
-    std::cout << "Enter the wine code: ";
-    std::cin >> newWine.wineCode;
-    //validates newWine.windeCode is number
-    for (int i : newWine.wineCode) {
-        assert(isdigit(i));
-    }
-    std::cout<< std::endl;
+//Wine Code
+    while (true){
+        std::cout<< std::endl;
+        std::cout << "Enter the wine code: "; //has to be string
+        std::cin >> newWine.wineCode;
+        std::cout<< std::endl;
 
-
-    for (const auto& wine : inventory) {
-        if (wine.wineCode == newWine.wineCode) {
+        //validates if the wine code is alphanumeric
+        if (!isAlphaNumericStr(newWine.wineCode)) {
+            std::cout << "The wine code must be alphanumeric." << std::endl;
+            std::cout<< std::endl;
+            continue;
+        }
+        //validates code is not repeated
+        if (codeIsInUse(newWine.wineCode, inventory)) {
             std::cout << "The wine code is already in use." << std::endl;
             std::cout<< std::endl;
-            return;
+            continue;
         }
+        break;
     }
 
 
-    std::cout << "Enter the wine name: ";
-    std::cin >> newWine.name;
-    std::cout<< std::endl;
+//Wine Name
+    while (true){
+        std::cout << "Enter the wine name: ";
+        std::cin >> newWine.name;
+        std::cout<< std::endl;
 
-    for (const auto& wine : inventory) {
-        if (wine.name == newWine.name) {
-            std::cout << "The wine name is already in use." << std::endl;
+        if (!isAlphaNumericStr(newWine.name)) {
+            std::cout << "The wine name must be alphanumeric." << std::endl;
             std::cout<< std::endl;
-            return;
+            continue;
         }
+        break;
     }
 
 
-    std::cout << "Enter the brand: ";
-    std::cin >> newWine.brand;
-    std::cout<< std::endl;
+//Brand Name
+    while (true){
+        std::cout << "Enter the brand: ";
+        std::cin >> newWine.brand;
+        std::cout<< std::endl;
 
-
-    std::cout << "Enter the production date (dd mm yyyy): ";
-    std::cin >> newWine.productionDate.day >> newWine.productionDate.month >> newWine.productionDate.year;
-    assert(newWine.productionDate.day <= 31 && newWine.productionDate.month <= 12 && newWine.productionDate.year <= 2023);
-    std::cout<< std::endl;
-
-
-    std::cout << "Enter the entry date (dd mm yyyy): ";
-    std::cin >> newWine.entryDate.day >> newWine.entryDate.month >> newWine.entryDate.year;
-    assert(newWine.entryDate.day <= 31 && newWine.entryDate.month <= 12 && newWine.entryDate.year <= 2023);
-    assert(newWine.entryDate.day >= newWine.productionDate.day && newWine.entryDate.month >= newWine.productionDate.month && newWine.entryDate.year >= newWine.productionDate.year);
-    std::cout<< std::endl;
-
-
-    std::cout << "Enter the wine type(Red, White, Rose): ";
-    std::cin >> newWine.type;
-    //turn the string to uppercase
-    for (int i = 0; i < newWine.type.length(); i++) {
-        newWine.type[i] = toupper(newWine.type[i]);
+        if (!isAlphaNumericStr(newWine.brand)) {
+            std::cout << "The wine name must be alphanumeric." << std::endl;
+            std::cout<< std::endl;
+            continue;
+        }
+        break;
     }
-    assert(newWine.type == "RED" || newWine.type == "WHITE" || newWine.type == "ROSE");
-    std::cout<< std::endl;
-
-
-    std::cout << "Enter the price without taxes: ";
-    std::cin >> newWine.priceWithoutTaxes;
-    assert(newWine.priceWithoutTaxes > 0);
-    std::cout<< std::endl;
 
 
 
+//Production Date
+    while (true){
+        std::cout << "Enter the production day: ";
+        std::cin >> newWine.productionDate.day;
+        std::cout<< std::endl;
+
+        if (std::cin.good())
+        {
+            //Input is okay
+        }
+        else
+        {
+            // resets the buffer's state to good
+            std::cin.clear();
+            //empty it
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(),'\n');
+            std::cout << "Invalid input." << std::endl;
+            continue;
+        }
+
+
+        if (newWine.productionDate.day > 31 || newWine.productionDate.day < 1) {
+            std::cout<<"The day must be between 1 and 31."<<std::endl;
+            std::cout<< std::endl;
+            continue;
+        }
+        break;
+    }
+
+    while (true){
+
+        std::cout << "Enter the production month: ";
+        std::cin >> newWine.productionDate.month;
+        std::cout<< std::endl;
+
+        if (std::cin.good())
+        {
+            //Input is okay
+        }
+        else
+        {
+            // resets the buffer's state to good
+            std::cin.clear();
+            //empty it
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(),'\n');
+            std::cout << "Invalid input." << std::endl;
+            continue;
+        }
+
+        if (newWine.productionDate.month > 12 || newWine.productionDate.month < 1) {
+            std::cout<<"The month must be between 1 and 12."<<std::endl;
+            std::cout<< std::endl;
+            continue;
+        }
+        break;
+    }
+
+    while (true){
+
+        std::cout << "Enter the production year: ";
+        std::cin >> newWine.productionDate.year;
+        std::cout<< std::endl;
+
+        if (std::cin.good())
+        {
+            //Input is okay
+        }
+        else
+        {
+            // resets the buffer's state to good
+            std::cin.clear();
+            //empty it
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(),'\n');
+            std::cout << "Invalid input." << std::endl;
+            continue;
+        }
+
+        if (newWine.productionDate.year > 2023) {
+            std::cout<<"Invalid Year."<<std::endl;
+            std::cout<< std::endl;
+            continue;
+        }
+        break;
+    }
+
+
+
+//Entry Dates
+
+    while (true){
+        std::cout << "Enter the entry year: ";
+        std::cin >> newWine.entryDate.year;
+        std::cout<< std::endl;
+
+        if (std::cin.good())
+        {
+            //Input is okay
+        }
+        else
+        {
+            // resets the buffer's state to good
+            std::cin.clear();
+            //empty it
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(),'\n');
+            std::cout << "Invalid input." << std::endl;
+            continue;
+        }
+
+        if (newWine.entryDate.year > 2023) {
+            std::cout<<"Invalid Year."<<std::endl;
+            std::cout<< std::endl;
+            continue;
+        }
+
+        if (newWine.entryDate.year < 1960) {
+            std::cout<<"Invalid Year."<<std::endl;
+            std::cout<< std::endl;
+            continue;
+        }
+
+        if (newWine.entryDate.year < newWine.productionDate.year) {
+            std::cout<<"The entry year must be greater than the production year."<<std::endl;
+            std::cout<< std::endl;
+            continue;
+        }
+
+        break;
+    }
+
+
+    while (true){
+        std::cout << "Enter the entry month: ";
+        std::cin >> newWine.entryDate.month;
+        std::cout<< std::endl;
+
+        if (std::cin.good())
+        {
+            //Input is okay
+        }
+        else
+        {
+            // resets the buffer's state to good
+            std::cin.clear();
+            //empty it
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(),'\n');
+            std::cout << "Invalid input." << std::endl;
+            continue;
+        }
+
+        if (newWine.entryDate.month > 12 || newWine.entryDate.month < 1) {
+            std::cout<<"The month must be between 1 and 12."<<std::endl;
+            std::cout<< std::endl;
+            continue;
+        }
+
+        if (newWine.entryDate.year == newWine.productionDate.year) {
+            if (newWine.entryDate.month < newWine.productionDate.month) {
+                std::cout<<"The entry month must be greater than the production month."<<std::endl;
+                std::cout<< std::endl;
+                continue;
+            }
+        }
+        break;
+    }
+
+
+    while (true){
+        std::cout << "Enter the entry day: ";
+        std::cin >> newWine.entryDate.day;
+        std::cout<< std::endl;
+
+        if (std::cin.good())
+        {
+            //Input is okay
+        }
+        else
+        {
+            // resets the buffer's state to good
+            std::cin.clear();
+            //empty it
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(),'\n');
+            std::cout << "Invalid input." << std::endl;
+            continue;
+        }
+
+        if (newWine.entryDate.day > 31 || newWine.entryDate.day < 1) {
+            std::cout<<"The day must be between 1 and 31."<<std::endl;
+            std::cout<< std::endl;
+            continue;
+        }
+
+        if (newWine.entryDate.year == newWine.productionDate.year) {
+            if (newWine.entryDate.month == newWine.productionDate.month) {
+                if (newWine.entryDate.day < newWine.productionDate.day) {
+                    std::cout<<"The entry day must be greater than the production day."<<std::endl;
+                    std::cout<< std::endl;
+                    continue;
+                }
+            }
+        }
+
+        break;
+    }
+
+
+
+//Wine Type
+    while (true){
+        std::cout << "Enter the wine type(Red, White, Rose): ";
+        std::cin >> newWine.type;
+        //turns the string to uppercase
+        for (int i = 0; i < newWine.type.length(); i++) {
+            newWine.type[i] = toupper(newWine.type[i]);
+        }
+        std::cout<< std::endl;
+
+        if (newWine.type != "RED" && newWine.type != "WHITE" && newWine.type != "ROSE") {
+            std::cout<<"Invalid wine type."<<std::endl;
+            std::cout<< std::endl;
+            continue;
+        }
+        break;
+    }
+
+//Price without taxes
+    while (true){
+        std::cout << "Enter the price without taxes: ";
+        std::cin >> newWine.priceWithoutTaxes;
+        std::cout<< std::endl;
+
+        if (std::cin.good())
+        {
+            //Input is okay
+        }
+        else
+        {
+            // resets the buffer's state to good
+            std::cin.clear();
+            //empty it
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(),'\n');
+            std::cout << "Invalid input." << std::endl;
+            continue;
+        }
+
+        if (newWine.priceWithoutTaxes < 0) {
+            std::cout<<"The price must be positive."<<std::endl;
+            std::cout<< std::endl;
+            continue;
+        }
+        break;
+    }
+
+//Selling Price
     newWine.sellingPrice = newWine.priceWithoutTaxes + (newWine.priceWithoutTaxes * 0.15);
 
+//Provider name
+    while (true){
+        std::cout << "Enter the provider name: ";
+        std::cin >> newWine.provider.name;
+        std::cout<< std::endl;
 
-    std::cout << "Enter the provider name: ";
-    std::cin >> newWine.provider.name;
-
-    //validates newWine.provider.name is string
-    for (char i : newWine.provider.name) {
-        assert(isalpha(i));
+        if (!isAlphaStr(newWine.provider.name)){
+            std::cout<<"The provider name must be alphabetic."<<std::endl;
+            std::cout<< std::endl;
+            continue;
+        }
+        break;
     }
-    std::cout<< std::endl;
 
 
-    std::cout << "Enter the provider phone: ";
-    std::cin >> newWine.provider.phone;
-    assert(newWine.provider.phone.length() == 9);
-    std::cout<< std::endl;
+//Provider phone
+    while (true){
+        std::cout << "Enter the provider phone: ";
+        std::cin >> newWine.provider.phone;
+        std::cout<< std::endl;
 
+        if (!isNumericStr(newWine.provider.phone)){
+            std::cout<<"The provider phone must be numeric."<<std::endl;
+            std::cout<< std::endl;
+            continue;
+        }
 
-    std::cout << "Enter the provider identification number: ";
-    std::cin >> newWine.provider.identificationNumber;
-
-    assert(newWine.provider.identificationNumber.length() == 8);
-
-    //validates newWine.provider.identificationNumber is number
-    for (char i : newWine.provider.identificationNumber) {
-        assert(isdigit(i));
+        break;
     }
-    std::cout<< std::endl;
 
 
+//Provider identification number
+    while (true){
+        std::cout << "Enter the provider identification number: ";
+        std::cin >> newWine.provider.identificationNumber;
+        std::cout<< std::endl;
+
+        if (!isNumericStr(newWine.provider.identificationNumber)){
+            std::cout<<"The provider identification number must be numeric."<<std::endl;
+            std::cout<< std::endl;
+            continue;
+        }
+        if (newWine.provider.identificationNumber.length() != 11){
+            std::cout<<"The provider identification number must have 11 digits."<<std::endl;
+            std::cout<< std::endl;
+            continue;
+        }
+        break;
+    }
+
+
+
+//NewWine Push
     inventory.push_back(newWine);
 
     std::cout << "Wine added successfully!" << std::endl;
@@ -169,9 +469,22 @@ void viewInventory() {
 
 
 void searchByName() {
+
     std::string name;
-    std::cout << "Enter the wine code to search for: ";
-    std::cin >> name;
+    while (true){
+        std::cout << "Enter the wine name to search for: ";
+        std::cin >> name;
+        std::cout<< std::endl;
+
+        //validates if the wine code is alphanumeric
+        if (!isAlphaNumericStr(name)) {
+            std::cout << "The wine name must be alphanumeric." << std::endl;
+            std::cout<< std::endl;
+            std::cout<< std::endl;
+            continue;
+        }
+        break;
+    }
 
     bool found = false;
     for (const auto& wine : inventory) {
@@ -204,8 +517,19 @@ void searchByName() {
 
 void updateSellingPrice() {
     std::string code;
-    std::cout << "Enter the wine code to update the selling price: ";
-    std::cin >> code;
+
+    while (true){
+        std::cout << "Enter the wine code to update the selling price: ";
+        std::cin >> code;
+
+        //validates if the wine code is alphanumeric
+        if (!isAlphaNumericStr(code)) {
+            std::cout << "The wine code must be alphanumeric." << std::endl;
+            std::cout<< std::endl;
+            continue;
+        }
+        break;
+    }
 
     bool found = false;
     for (auto& wine : inventory) {
@@ -230,17 +554,141 @@ void updateSellingPrice() {
 
 
 void updateEntryDate() {
+
     std::string code;
-    std::cout << "Enter the wine code to update the entry date: ";
-    std::cin >> code;
+    while (true){
+        std::cout << "Enter the wine code to update the entry date: ";
+        std::cin >> code;
+
+        //validates if the wine code is alphanumeric
+        if (!isAlphaNumericStr(code)) {
+            std::cout << "The wine code must be alphanumeric." << std::endl;
+            std::cout<< std::endl;
+            continue;
+        }
+        break;
+    }
 
     bool found = false;
     for (auto& wine : inventory) {
         if (wine.wineCode == code) {
             found = true;
             Date newEntryDate;
-            std::cout << "Enter the new entry date (dd mm yyyy): ";
-            std::cin >> newEntryDate.day >> newEntryDate.month >> newEntryDate.year;
+
+            while (true){
+                std::cout << "Enter the entry year: ";
+                std::cin >> newEntryDate.year;
+                std::cout<< std::endl;
+
+                if (std::cin.good())
+                {
+                    //Input is okay
+                }
+                else
+                {
+                    // resets the buffer's state to good
+                    std::cin.clear();
+                    //empty it
+                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(),'\n');
+                    std::cout << "Invalid input." << std::endl;
+                    continue;
+                }
+
+                if (newEntryDate.year > 2023) {
+                    std::cout<<"Invalid Year."<<std::endl;
+                    std::cout<< std::endl;
+                    continue;
+                }
+
+                if (newEntryDate.year < 1960) {
+                    std::cout<<"Invalid Year."<<std::endl;
+                    std::cout<< std::endl;
+                    continue;
+                }
+
+                if (newEntryDate.year < wine.productionDate.year) {
+                    std::cout<<"The entry year must be greater than the production year."<<std::endl;
+                    std::cout<< std::endl;
+                    continue;
+                }
+
+                break;
+            }
+
+
+            while (true){
+                std::cout << "Enter the entry month: ";
+                std::cin >> newEntryDate.month;
+                std::cout<< std::endl;
+
+                if (std::cin.good())
+                {
+                    //Input is okay
+                }
+                else
+                {
+                    // resets the buffer's state to good
+                    std::cin.clear();
+                    //empty it
+                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(),'\n');
+                    std::cout << "Invalid input." << std::endl;
+                    continue;
+                }
+
+                if (newEntryDate.month > 12 || newEntryDate.month < 1) {
+                    std::cout<<"The month must be between 1 and 12."<<std::endl;
+                    std::cout<< std::endl;
+                    continue;
+                }
+
+                if (newEntryDate.year == wine.productionDate.year) {
+                    if (newEntryDate.month < wine.productionDate.month) {
+                        std::cout<<"The entry month must be greater than the production month."<<std::endl;
+                        std::cout<< std::endl;
+                        continue;
+                    }
+                }
+                break;
+            }
+
+
+            while (true){
+                std::cout << "Enter the entry day: ";
+                std::cin >> newEntryDate.day;
+                std::cout<< std::endl;
+
+                if (std::cin.good())
+                {
+                    //Input is okay
+                }
+                else
+                {
+                    // resets the buffer's state to good
+                    std::cin.clear();
+                    //empty it
+                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(),'\n');
+                    std::cout << "Invalid input." << std::endl;
+                    continue;
+                }
+
+                if (newEntryDate.day > 31 || newEntryDate.day < 1) {
+                    std::cout<<"The day must be between 1 and 31."<<std::endl;
+                    std::cout<< std::endl;
+                    continue;
+                }
+
+                if (newEntryDate.year == wine.productionDate.year) {
+                    if (newEntryDate.month == wine.productionDate.month) {
+                        if (newEntryDate.day < wine.productionDate.day) {
+                            std::cout<<"The entry day must be greater than the production day."<<std::endl;
+                            std::cout<< std::endl;
+                            continue;
+                        }
+                    }
+                }
+
+                break;
+            }
             wine.entryDate = newEntryDate;
             std::cout << "Entry date updated successfully!" << std::endl;
             break;
@@ -253,14 +701,30 @@ void updateEntryDate() {
 }
 
 void searchByProvider() {
-    std::string providerName;
-    std::cout << "Enter the provider name to search for: ";
-    std::cin >> providerName;
+    std::string providerId;
+
+    while (true){
+        std::cout << "Enter the DNI of the provider: ";
+        std::cin >> providerId;
+        std::cout<< std::endl;
+
+        if (!isNumericStr(providerId)){
+            std::cout<<"The provider identification number must be numeric."<<std::endl;
+            std::cout<< std::endl;
+            continue;
+        }
+        if (providerId.length() != 11){
+            std::cout<<"The provider identification number must have 11 digits."<<std::endl;
+            std::cout<< std::endl;
+            continue;
+        }
+        break;
+    }
 
     bool found = false;
-    std::cout << "Wines provided by " << providerName << ":" << std::endl;
+    std::cout << "Wines provided by " << providerId << ":" << std::endl;
     for (const auto& wine : inventory) {
-        if (wine.provider.name == providerName) {
+        if (wine.provider.name == providerId) {
             found = true;
             std::cout << "Code: " << wine.wineCode << std::endl;
             std::cout << "Name: " << wine.name << std::endl;
@@ -280,7 +744,7 @@ void searchByProvider() {
 
     if (!found) {
         std::cout<< std::endl;
-        std::cout << "No wines found for provider " << providerName << std::endl;
+        std::cout << "No wines found for provider " << providerId << std::endl;
         std::cout<< std::endl;
     }
 }
@@ -288,7 +752,6 @@ void searchByProvider() {
 
 
 void writeCSV() {
-
     remove("./inventory.csv");
     std::ofstream inventory_file;
     inventory_file.open("./inventory.csv",  std::ios::app);
@@ -304,14 +767,25 @@ void writeCSV() {
 
 void deleteWine() {
     std::string code;
-    std::cout << "Enter the wine code to delete: ";
-    std::cin >> code;
+
+    while (true){
+        std::cout << "Enter the wine code to delete: ";
+        std::cin >> code;
+
+        //validates if the wine code is alphanumeric
+        if (!isAlphaNumericStr(code)) {
+            std::cout << "The wine code must be alphanumeric." << std::endl;
+            std::cout<< std::endl;
+            continue;
+        }
+        break;
+    }
 
     bool found = false;
-    for (auto it = inventory.begin(); it != inventory.end(); ++it) {
-        if (it->wineCode == code) {
+    for (auto i = inventory.begin(); i != inventory.end(); ++i) {
+        if (i->wineCode == code) {
             found = true;
-            inventory.erase(it);
+            inventory.erase(i);
             std::cout << "Wine with code " << code << " deleted successfully!" << std::endl;
             break;
         }
@@ -326,9 +800,20 @@ void deleteWine() {
 //get info of product in a .csv file
 void writeProductCSV(){
     std::string code;
-    std::cout << "Enter the wine code to get the product info: ";
-    std::cin >> code;
-    std::cout<< std::endl;
+
+    while (true){
+        std::cout << "Enter the wine code to get the product info: ";
+        std::cin >> code;
+        std::cout<< std::endl;
+
+        //validates if the wine code is alphanumeric
+        if (!isAlphaNumericStr(code)) {
+            std::cout << "The wine code must be alphanumeric." << std::endl;
+            std::cout<< std::endl;
+            continue;
+        }
+        break;
+    }
 
     remove("./product.csv");
     std::ofstream product_file;
@@ -348,9 +833,25 @@ void writeProductCSV(){
 void writeProviderCSV(){
 
     std::string providerId;
-    std::cout << "Enter the DNI of the provider: ";
-    std::cin >> providerId;
-    std::cout<< std::endl;
+
+    while (true){
+        std::cout << "Enter the DNI of the provider: ";
+        std::cin >> providerId;
+        std::cout<< std::endl;
+
+        if (!isNumericStr(providerId)){
+            std::cout<<"The provider identification number must be numeric."<<std::endl;
+            std::cout<< std::endl;
+            continue;
+        }
+        if (providerId.length() != 11){
+            std::cout<<"The provider identification number must have 11 digits."<<std::endl;
+            std::cout<< std::endl;
+            continue;
+        }
+        break;
+    }
+
 
     remove("./provider.csv");
     std::ofstream provider_file;
@@ -370,12 +871,11 @@ int main() {
     int choice;
 
 
-
     while (true) {
         std::cout << "VEA Winery System" << std::endl;
         std::cout << "1. Add Wine" << std::endl;
         std::cout << "2. View Wine Inventory" << std::endl;
-        std::cout << "3. Search Wine by Code" << std::endl;
+        std::cout << "3. Search Wine by Name" << std::endl;
         std::cout << "4. Update Selling Price" << std::endl;
         std::cout << "5. Update Entry Date" << std::endl;
         std::cout << "6. Search By Provider" << std::endl;
@@ -386,6 +886,23 @@ int main() {
         std::cout << "0. Exit" << std::endl;
         std::cout << "Enter your choice: ";
         std::cin >> choice;
+
+
+        if (std::cin.good())
+        {
+            //Input is okay
+        }
+        else
+        {
+            // resets the buffer's state to good
+            std::cin.clear();
+            //empty it
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(),'\n');
+            std::cout << "Invalid input." << std::endl;
+            std::cout<< std::endl;
+            std::cout<< std::endl;
+            continue;
+        }
 
         switch (choice) {
             case 1:
@@ -419,7 +936,7 @@ int main() {
                 writeCSV();
             break;
             case 0:
-                std::cout << "Goodbye..." << std::endl;
+                std::cout << "Thanks for shopping with VEA, have a nice day." << std::endl;
                 writeCSV();
             return 0;
             default:
